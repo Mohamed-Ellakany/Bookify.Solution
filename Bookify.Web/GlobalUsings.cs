@@ -1,0 +1,2 @@
+﻿global using Bookify.Web.Core.Models;
+global using Bookify.Web.Core.ViewModels;

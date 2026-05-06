@@ -1,5 +1,6 @@
 using Bookify.Web.Data;
 using Bookify.Web.Mapping;
+using Bookify.Web.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace Bookify.Web
             builder.Services.AddAutoMapper(cfg=>cfg.AddProfile(typeof(MappingProfile)));
             builder.Services.AddExpressiveAnnotations();
 
-
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings))); 
 
 
             var app = builder.Build();

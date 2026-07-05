@@ -21,3 +21,12 @@ body {
     padding-top: 2.15rem;
     padding-bottom: .225rem;
 }
+
+.dt-spinner + div {
+    display: none !important;
+}
+
+
+.h-70px{
+    height : 70px !important
+}

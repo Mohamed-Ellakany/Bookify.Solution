@@ -12,6 +12,7 @@ namespace Bookify.Web.Data
         public DbSet<BookCategory> BookCategories { get; set; }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<BookCopy> BookCopies { get; set; }
 
 
 
@@ -19,6 +20,11 @@ namespace Bookify.Web.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<BookCategory>(b => b.HasKey(bc => new { bc.BookId, bc.CategoryId }));
+
+            builder.HasSequence<int>("SerialNumber", schema: "shared").StartsAt(100001);
+
+            builder.Entity<BookCopy>().Property(e => e.SerialNumber).HasDefaultValueSql("NEXT VALUE FOR shared.SerialNumber");
+
 
             base.OnModelCreating(builder);
         }

@@ -24,8 +24,19 @@ namespace Bookify.Web.Mapping
             //Book 
             CreateMap<BookFormViewModel, Book>()
                 .ReverseMap()
-                .ForMember(dest=>dest.Categories, opt => opt.Ignore());
-                
-               }
+                .ForMember(dest => dest.Categories, opt => opt.Ignore());
+
+            CreateMap<Book, BookViewModel>()
+                .ForMember(dest => dest.BookCategories, opt => opt.MapFrom(src => src.BookCategories.Select(bc => bc.Category!.Name).ToList()))
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author!.Name));
+
+
+            //BookCopy
+            CreateMap<BookCopy, BookCopyViewModel>()
+                .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book!.Title))
+                .ReverseMap();
+
+
+        }
     }
 }

@@ -166,18 +166,20 @@ var KTDatatablesExample = function () {
 
 
 
-
 $(document).ready(function () {
     // tinyMCE  
-    var options = {
-        selector: ".js-tinymce", height: "460", resize: false};
+    if ($(".js-tinymce").length > 0) {
+        var options = {
+            selector: ".js-tinymce", height: "460", resize: false
+        };
 
-    if (KTThemeMode.getMode() === "dark") {
-        options["skin"] = "oxide-dark";
-        options["content_css"] = "dark";
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+
+        tinymce.init(options);
     }
-
-    tinymce.init(options);
 
 
     // datepicker
@@ -190,7 +192,9 @@ $(document).ready(function () {
 
     //select2
     $('.js-select2').select2();
-
+    $('.js-select2').on('select2:select', function (e) {
+        $('form').validate().element('#' + $(this).attr('id'));
+    });
 
 
 
@@ -221,7 +225,7 @@ $(document).ready(function () {
             method: 'GET',
             success: function (form) {
                 modal.find('.modal-body').html(form);
-                $.validator.unobtrusive.parse('#Modal');
+                $.validator.unobtrusive.parse(modal);
 
             },
             error: function () {

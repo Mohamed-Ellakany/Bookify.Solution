@@ -26,11 +26,12 @@ namespace Bookify.Web.Core.Models
         [MaxLength(50)]
         public string  Hall { get; set; } = null!;
 
-        public bool IsAvailableToRental { get; set; }
+        public bool IsAvailableForRental { get; set; }
 
         public string Description { get; set; } = null!;
 
         public ICollection<BookCategory> BookCategories { get; set; } = new HashSet<BookCategory>();
+        public ICollection<BookCopy> BookCopies { get; set; } = new HashSet<BookCopy>();
 
 
     }

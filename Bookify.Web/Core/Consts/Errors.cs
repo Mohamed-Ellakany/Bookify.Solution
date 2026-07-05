@@ -13,6 +13,7 @@
         public const string DublicatedBookWithTheSameAuthor = "A book with the same title and author already exists.";
         public const string DublicatedAuthorWithTheSameBook = "An author with the same book title already exists.";
         public const string InvalidPublishingDate = "The publishing date cannot be in the future.";
+        public const string InvalidRange = "{0} Must Be Between {1} and {2}.";
 
 
 

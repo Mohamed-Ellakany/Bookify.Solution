@@ -17,7 +17,7 @@
     }
     <div class="mb-5">
         <div class="form-floating mb-2">
-            <input type="text" class="form-control" placeholder="EditionNumber" asp-for="EditionNumber" value=""/>
+            <input type="text" class="form-control" placeholder="EditionNumber" asp-for="EditionNumber" value="@(Model?.Id > 0 ? Model.EditionNumber : string.Empty)"/>
             <label asp-for="EditionNumber"></label>
         </div>
         <span asp-validation-for="EditionNumber" class="text-danger invalid-feedback d-block"></span>

@@ -13,8 +13,10 @@
             <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
                 <!--begin::Image-->
                 <div class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px me-7 mb-4">
-                    <a data-fslightbox href="@Model.ImageUrl">
-                        <img class="mw-50px mw-lg-75px" src="@Model.ImageThumbnailUrl" alt="@Model.Title" />
+                    <a data-fslightbox href="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/books/no-book.jpg" : Model.ImageUrl)">
+
+                        <img class="mw-50px mw-lg-75px" src="@(string.IsNullOrEmpty(Model.ImageThumbnailUrl) ? "/images/books/no-book.jpg" : Model.ImageThumbnailUrl)" alt="@Model.Title" />
+
                     </a>
                 </div>
                 <!--end::Image-->
@@ -235,24 +237,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        function onAddModelSuccess(row){
-        
-            ShowSuccessMessage();
-            $('#Modal').modal('hide');
-
-            $('tbody').prepend(row);
-           KTMenu.createInstances();
-
-          var count = $('#CopiesCount')
-          var newCount = parseInt(count.text()) + 1 ;
-          count.text(newCount);
-
-          $('table').removeClass('d-none')
-          $('.js-alert').addClass('d-none')
-
-        }
-       
-    </script>
+    <script src="~/js/books-details.js" asp-append-version="true"></script>
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Bookify.Web.Core.ViewModels
+﻿namespace Bookify.Web.Core.ViewModels
 {
     public class BookViewModel
     {
@@ -29,13 +27,13 @@ namespace Bookify.Web.Core.ViewModels
         public IEnumerable<BookCopyViewModel> BookCopies { get; set; } = null!;
 
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public int? CreatedById { get; set; }
+        public string? CreatedById { get; set; }
 
         public DateTime? LastUpdatedOn { get; set; }
-        public int? UpdatedById { get; set; }
+        public string? UpdatedById { get; set; }
 
         public bool IsDeleted { get; set; }
         public DateTime? DeletedOn { get; set; }
-        public int? DeletedById { get; set; }
+        public string? DeletedById { get; set; }
     }
 }

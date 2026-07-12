@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace Bookify.Web.Core.Models
+﻿namespace Bookify.Web.Core.Models
 {
     [Index(nameof(Name), IsUnique = true)]
     public class Category : BaseModel

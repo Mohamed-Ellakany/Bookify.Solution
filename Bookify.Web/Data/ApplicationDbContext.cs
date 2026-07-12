@@ -1,10 +1,7 @@
-﻿using Bookify.Web.Core.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
+﻿
 namespace Bookify.Web.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }

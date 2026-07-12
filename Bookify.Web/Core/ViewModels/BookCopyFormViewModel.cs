@@ -1,7 +1,4 @@
-﻿using Bookify.Web.Core.Consts;
-using System.ComponentModel.DataAnnotations;
-
-namespace Bookify.Web.Core.ViewModels
+﻿namespace Bookify.Web.Core.ViewModels
 {
     public class BookCopyFormViewModel
     {

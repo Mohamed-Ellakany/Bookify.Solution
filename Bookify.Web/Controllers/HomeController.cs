@@ -1,9 +1,6 @@
-using Bookify.Web.Core.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-
 namespace Bookify.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()

@@ -1,12 +1,6 @@
-﻿using Bookify.Web.Data;
-using Bookify.Web.Filters;
-using Bookify.Web.Core.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-
-namespace Bookify.Web.Controllers
+﻿namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Archive)]
     public class CategoriesController(ApplicationDbContext context, IMapper mapper) : Controller
     {
         private readonly ApplicationDbContext _context = context;
@@ -34,6 +28,9 @@ namespace Bookify.Web.Controllers
                 return PartialView("_Form", categoryVM);
 
             var category = _mapper.Map<Category>(categoryVM);
+
+            category.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            category.CreatedOn = DateTime.Now;
 
             _context.Categories.Add(category);
             _context.SaveChanges();
@@ -70,7 +67,10 @@ namespace Bookify.Web.Controllers
             }
 
            category = _mapper.Map(categoryVM, category);
+            
             category.LastUpdatedOn = DateTime.Now;
+            category.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
             _context.Categories.Update(category);
             _context.SaveChanges();
 
@@ -88,9 +88,11 @@ namespace Bookify.Web.Controllers
             if (category is null) return NotFound();
 
             category.IsDeleted = !category.IsDeleted;
-            category.LastUpdatedOn = DateTime.Now;
             category.DeletedOn = null;
 
+            category.LastUpdatedOn = DateTime.Now;
+            category.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            
             if (!category.IsDeleted)
                 category.DeletedOn= DateTime.Now;
 

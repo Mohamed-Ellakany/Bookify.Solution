@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Bookify.Web.Helpers
@@ -21,7 +20,7 @@ namespace Bookify.Web.Helpers
                 return Task.CompletedTask;
             }
 
-            var currentController = ViewContextData.RouteData.Values["controller"]?.ToString();
+            var currentController = ViewContextData.RouteData.Values["controller"]?.ToString() ?? string.Empty;
 
             if(currentController!.Equals(ActiveWhen)) {
                 if (output.Attributes.ContainsName("class"))

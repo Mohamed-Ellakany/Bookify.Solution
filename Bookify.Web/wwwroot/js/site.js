@@ -20,9 +20,9 @@ function ShowSuccessMessage(message = 'Saved Successfully') {
 }
 
 function ShowErrorMessage(message = 'An error occurred') {
-
+    
     Swal.fire({
-        text: message,
+        text: message.responseText != undefined ? message.responseText : message,
         icon: "error",
         buttonsStyling: false,
         confirmButtonText: "Ok",
@@ -56,6 +56,16 @@ function onModalSuccess(row) {
 function onModalComplete() {
     $("body :submit").removeAttr("disabled").removeAttr("data-kt-indicator");
 }
+
+
+//select2
+function applySelect2() {
+    $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        $('form').validate().element('#' + $(this).attr('id'));
+    });
+}
+
 
 var headers = $('th');
 $.each(headers, function (i) {
@@ -191,10 +201,7 @@ $(document).ready(function () {
     });
 
     //select2
-    $('.js-select2').select2();
-    $('.js-select2').on('select2:select', function (e) {
-        $('form').validate().element('#' + $(this).attr('id'));
-    });
+    applySelect2();
 
 
 
@@ -227,6 +234,8 @@ $(document).ready(function () {
                 modal.find('.modal-body').html(form);
                 $.validator.unobtrusive.parse(modal);
 
+                applySelect2();
+
             },
             error: function () {
                 ShowErrorMessage();
@@ -245,12 +254,12 @@ $(document).ready(function () {
 
         var btn = $(this);
         bootbox.confirm({
-            title: "Are you sure you want to toggle the status of this category?",
-            message: "This action will change the availability of the category.",
+            title: "Are you sure you want to toggle the status of this item ?",
+            message: "This action will change the availability of this item.",
             buttons: {
                 confirm: {
                     label: 'Yes',
-                    className: 'btn-success'
+                    className: 'btn-danger'
                 },
                 cancel: {
                     label: 'No',
@@ -291,6 +300,52 @@ $(document).ready(function () {
 
     });
 
+
+    $('body').delegate('.js-confirm', 'click', function () {
+
+        var btn = $(this);
+        bootbox.confirm({
+            message: btn.data('message'),
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+
+                    $.post({
+                        url: btn.data('url'),
+                        data: {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            ShowSuccessMessage();
+
+                        },
+                        error: function () {
+                            ShowErrorMessage();
+                        }
+                    });
+                }
+            }
+        });
+
+    });
+
+
+    // handle sign out button
+
+    $('.js-signout').on('click', function () {
+
+        $('#SignOut').submit();
+
+    });
 
 
 })

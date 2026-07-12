@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
+﻿
 namespace Bookify.Web.Mapping
 {
     public class MappingProfile : Profile
@@ -37,8 +35,15 @@ namespace Bookify.Web.Mapping
                 .ReverseMap();
 
             CreateMap<BookCopy, BookCopyFormViewModel>();
+            
+            
+            //Users 
+            CreateMap<ApplicationUser, UserViewModel>();
 
-
+            CreateMap<UserFormViewModel, ApplicationUser>()
+                .ForMember(dest=>dest.NormalizedEmail, opt => opt.MapFrom(src => src.Email.ToUpper()))
+                .ForMember(dest => dest.NormalizedUserName, opt => opt.MapFrom(src => src.UserName.ToUpper()))
+                .ReverseMap();
 
         }
     }

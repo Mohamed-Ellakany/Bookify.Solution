@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using Bookify.Web.Data;
-using Bookify.Web.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace Bookify.Web.Controllers
+﻿namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Archive)]
     public class BookCopiesController(ApplicationDbContext context , IMapper mapper) : Controller
     {
         private readonly ApplicationDbContext _context = context;
@@ -37,7 +32,10 @@ namespace Bookify.Web.Controllers
             {
                 EditionNumber = viewModel.EditionNumber,
                 IsAvailableForRental = book.IsAvailableForRental && viewModel.IsAvailableForRental,
+                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
+
+           
 
             book.BookCopies.Add(copy);
 
@@ -62,6 +60,7 @@ namespace Bookify.Web.Controllers
             return PartialView("Form", viewModel);
         }
 
+        // Authorization and Authentiaction
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -79,6 +78,7 @@ namespace Bookify.Web.Controllers
             copy.EditionNumber = model.EditionNumber;
             copy.IsAvailableForRental = copy.Book!.IsAvailableForRental && model.IsAvailableForRental;
             copy.LastUpdatedOn = DateTime.Now;
+            copy.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _context.SaveChanges();
 
@@ -101,6 +101,7 @@ namespace Bookify.Web.Controllers
 
             copy.IsDeleted = !copy.IsDeleted;
             copy.LastUpdatedOn = DateTime.Now;
+            copy.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value; 
 
             _context.SaveChanges();
 

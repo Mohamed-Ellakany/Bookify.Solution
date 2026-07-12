@@ -1,9 +1,4 @@
-﻿using Bookify.Web.Core.Consts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-using UoN.ExpressiveAnnotations.NetCore.Attributes;
-
+﻿
 namespace Bookify.Web.Core.ViewModels
 {
     public class BookFormViewModel

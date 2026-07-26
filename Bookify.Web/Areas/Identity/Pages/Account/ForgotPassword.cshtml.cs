@@ -20,11 +20,13 @@ public class ForgotPasswordModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEmailSender _emailSender;
+    private readonly IEmailBodyBuilder _emailBodyBuilder;
 
-    public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+    public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender ,IEmailBodyBuilder emailBodyBuilder)
     {
         _userManager = userManager;
         _emailSender = emailSender;
+        _emailBodyBuilder = emailBodyBuilder;
     }
 
     /// <summary>
@@ -70,10 +72,17 @@ public class ForgotPasswordModel : PageModel
                 values: new { area = "Identity", code },
                 protocol: Request.Scheme)!;
 
+            var body = _emailBodyBuilder.GetEmailBody("https://res.cloudinary.com/ellakanydev/image/upload/v1785106539/icon-positive-vote-2_mc5wjl.svg",
+                 $"Hey {user.FullName} ,",
+                 "Click on the button to reset your password ",
+                  HtmlEncoder.Default.Encode(callbackUrl),
+                  "reset password "
+                 );
+
             await _emailSender.SendEmailAsync(
                 Input.Email,
                 "Reset Password",
-                $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                body);
 
             return RedirectToPage("./ForgotPasswordConfirmation");
         }

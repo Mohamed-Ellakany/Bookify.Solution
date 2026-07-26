@@ -25,4 +25,4 @@
 				.Replace("[linkTitle]", linkTitle);
 		}
 	}
-}
+}   

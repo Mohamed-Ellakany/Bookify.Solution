@@ -2,7 +2,6 @@
 {
     public static class DefaultRoles
     {
-        
         public static async Task SeedAsync(RoleManager<IdentityRole> roleManager)
         {
             
@@ -15,7 +14,5 @@
             if (!await roleManager.RoleExistsAsync(AppRoles.Reception))
                 await roleManager.CreateAsync(new IdentityRole(AppRoles.Reception));
         }
-
-
     }
 }

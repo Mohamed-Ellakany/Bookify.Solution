@@ -1,14 +1,20 @@
-﻿namespace Bookify.Web.Controllers
+﻿using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.Text.Encodings.Web;
+
+namespace Bookify.Web.Controllers
 {
     [Authorize(Roles = AppRoles.Admin)]
-    public class UsersController(UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager) : Controller
+    public class UsersController(UserManager<ApplicationUser> userManager, IMapper mapper,RoleManager<IdentityRole> roleManager , IEmailSender emailSender , IEmailBodyBuilder emailBodyBuilder) : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-
+        private readonly IEmailSender _emailSender = emailSender;
+        private readonly IEmailBodyBuilder _emailBodyBuilder = emailBodyBuilder;
         public async Task<IActionResult> Index()
         {
+           
             var users = await _userManager.Users.ToListAsync();
             var viewModels = _mapper.Map<IEnumerable<UserViewModel>>(users);
 
@@ -49,13 +55,36 @@
                 FullName = viewModel.FullName,
                 CreatedOn = DateTime.UtcNow,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
-                EmailConfirmed= true
             };
 
-            var result = await _userManager.CreateAsync(user, viewModel.Password);
+            var result = await _userManager.CreateAsync(user, viewModel.Password!);
 
             if (result.Succeeded)
             {
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id, code},
+                    protocol: Request.Scheme)!;
+
+
+             
+                var body = _emailBodyBuilder.GetEmailBody("https://res.cloudinary.com/ellakanydev/image/upload/v1783873900/icon-positive-vote-1_rdexez_a909y0.svg",
+                     $"Hey {user.FullName} , thanks for joining us.",
+                     "Please Confirm Your Email ",
+                      HtmlEncoder.Default.Encode(callbackUrl),
+                      "Active Account"
+                     );
+
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your email", body);
+
+
+
+
+
                 await _userManager.AddToRolesAsync(user, viewModel.SelectedRoles);
                 var viewModelToReturn = _mapper.Map<UserViewModel>(user);
 
@@ -172,6 +201,9 @@
                     await _userManager.AddToRolesAsync(user, model.SelectedRoles);
                 }
 
+                await _userManager.UpdateSecurityStampAsync(user);
+
+
                 var viewModel = _mapper.Map<UserViewModel>(user);
                 return PartialView("_UserRow", viewModel);
 
@@ -197,6 +229,9 @@
             user.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _userManager.UpdateAsync(user);
+            
+            if(user.IsDeleted)
+                await _userManager.UpdateSecurityStampAsync(user);
 
             return Ok(user.LastUpdatedOn.ToString());
         }

@@ -21,11 +21,13 @@ public class ResendEmailConfirmationModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEmailSender _emailSender;
+    private readonly IEmailBodyBuilder _emailBodyBuilder ;
 
-    public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+    public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender , IEmailBodyBuilder emailBodyBuilder)
     {
         _userManager = userManager;
         _emailSender = emailSender;
+        _emailBodyBuilder = emailBodyBuilder;
     }
 
     /// <summary>
@@ -46,12 +48,16 @@ public class ResendEmailConfirmationModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = default!;
+        //[EmailAddress]
+        public string Username { get; set; } = default!;
     }
 
-    public void OnGet()
+    public void OnGet(string username)
     {
+        Input = new()
+        {
+            Username = username
+        };
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -61,7 +67,7 @@ public class ResendEmailConfirmationModel : PageModel
             return Page();
         }
 
-        var user = await _userManager.FindByEmailAsync(Input.Email);
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => (u.NormalizedUserName == Input.Username.ToUpper() || u.NormalizedEmail == Input.Username.ToUpper()) && !u.IsDeleted);
         if (user == null)
         {
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
@@ -76,10 +82,19 @@ public class ResendEmailConfirmationModel : PageModel
             pageHandler: null,
             values: new { userId = userId, code = code },
             protocol: Request.Scheme)!;
+
+
+       var body =  _emailBodyBuilder.GetEmailBody("https://res.cloudinary.com/ellakanydev/image/upload/v1783873900/icon-positive-vote-1_rdexez_a909y0.svg",
+            $"Hey {user.FullName} , thanks for joining us.",
+            "Please Confirm Your Email ",
+             HtmlEncoder.Default.Encode(callbackUrl),
+             "Active Account"
+            );
+
+
         await _emailSender.SendEmailAsync(
-            Input.Email,
-            "Confirm your email",
-            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            user.Email!,
+            "Confirm your email",body);
 
         ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
         return Page();

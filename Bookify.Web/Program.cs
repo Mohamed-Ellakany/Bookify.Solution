@@ -12,12 +12,18 @@ namespace Bookify.Web
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+
+
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
+
+
+            builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.Zero);
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -26,7 +32,11 @@ namespace Bookify.Web
 
             });
 
+
+
             builder.Services.AddTransient<IImageService, ImageService>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 
             builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
@@ -36,6 +46,7 @@ namespace Bookify.Web
             builder.Services.AddExpressiveAnnotations(); 
 
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings))); 
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings))); 
 
 
 

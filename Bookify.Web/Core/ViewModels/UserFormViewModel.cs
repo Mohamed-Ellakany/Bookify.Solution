@@ -19,8 +19,8 @@
         public string Email { get; set; } = null!;
 
 
-        [StringLength(100, ErrorMessage = Errors.MinMaxError, MinimumLength = 8)]
         [DataType(DataType.Password)]
+        [StringLength(100, ErrorMessage = Errors.MinMaxError, MinimumLength = 8)]
         [RegularExpression(RegexPatterns.PasswordPattern , ErrorMessage = Errors.WeakPassword)]
         [RequiredIf("Id == null", ErrorMessage = Errors.RequiredError)]
         public string? Password { get; set; } = default!;

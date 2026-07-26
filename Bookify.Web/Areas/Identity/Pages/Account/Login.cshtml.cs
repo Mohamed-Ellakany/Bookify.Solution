@@ -71,7 +71,7 @@ public class LoginModel : PageModel
         [Required]
         //[EmailAddress]
         [Display(Name = "UserName/Email")]
-        public string Email { get; set; } = default!;
+        public string Username { get; set; } = default!;
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -117,7 +117,7 @@ public class LoginModel : PageModel
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
 
-            var user = await _userManager.Users.SingleOrDefaultAsync(u=> (u.NormalizedUserName == Input.Email.ToUpper() || u.NormalizedEmail == Input.Email.ToUpper() ) && !u.IsDeleted);
+            var user = await _userManager.Users.SingleOrDefaultAsync(u=> (u.NormalizedUserName == Input.Username.ToUpper() || u.NormalizedEmail == Input.Username.ToUpper() ) && !u.IsDeleted);
 
             if (user is null)
             {
@@ -139,6 +139,10 @@ public class LoginModel : PageModel
             {
                 _logger.LogWarning("User account locked out.");
                 return RedirectToPage("./Lockout");
+            }
+            if (result.IsNotAllowed)
+            {
+                return RedirectToPage("./ResendEmailConfirmation", new { username = Input.Username });
             }
             else
             {

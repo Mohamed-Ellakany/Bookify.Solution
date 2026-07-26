@@ -115,7 +115,7 @@ public class RegisterModel : PageModel
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-           await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
+           //await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
 
             var result = await _userManager.CreateAsync(user, Input.Password);
 
